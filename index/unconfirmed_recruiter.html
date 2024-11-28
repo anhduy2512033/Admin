@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width: device-width, initial-scale=1.0">
+    <title>Unconfirmed Recruiters</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="../style/check_recruiter.css">
+    <style>
+        
+        .img-fluid {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+        }
+
+       
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+       
+        .confirm-checkbox {
+            cursor: pointer;
+        }
+        .confirmed {
+            color: green;
+        }
+        .not-confirmed {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">Admin</div>
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Search...">
+                    <button class="search-btn"><i class="fas fa-search"></i></button>
+                </div>
+                <div class="dropdown">
+                    <div class="user-icon">
+                        <i class="fas fa-bars"></i>
+                    </div>
+                    <div class="dropdown-content">
+                        <a href="applicant.html">Applicant</a>
+                        <a href="company.html">Company</a>
+                        <a href="confirmed_companies.html">Confirmed Companies</a>
+                        <a href="unconfirmed_companies.html">Unconfirmed Companies</a>
+                        <a href="check_recruiter.html">Recruiter Images</a>
+                        <a href="confirmed_recruiters.html">Confirmed Recruiters</a>
+                        <a href="unconfirmed_recruiter.html">Unconfirmed Recruiters</a>
+                        <a href="recruiter.html">Recruiter</a>
+                        <a href="#" onclick="confirmLogout()">Log Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+    <div class="container mt-3 mb-4">
+        <div class="col-lg-9 mt-4 mt-lg-0">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="user-dashboard-info-box table-responsive mb-0 bg-white p-4 shadow-sm">
+                        <table class="table manage-candidates-top mb-0" id="applicantTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Phone</th>
+                                    <th>ID Company</th>
+                                    <th>Email Address</th>
+                                    <th>Front Image</th>
+                                    <th>Back Image</th>
+                                    <th class="action text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                            </tbody>
+                        </table>
+                        <div class="text-center mt-3 mt-sm-3">
+                            <ul class="pagination justify-content-center mb-0">
+                                <li class="page-item disabled"><span class="page-link">Prev</span></li>
+                                <li class="page-item active" aria-current="page"><span class="page-link">1</span></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item"><a class="page-link" href="#">...</a></li>
+                                <li class="page-item"><a class="page-link" href="#">10</a></li>
+                                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="modal" id="imageModal">
+        <img id="modalImage" src="" alt="Full Image">
+    </div>
+
+    <script>
+        let recruiters = []; 
+        const itemsPerPage = 10; 
+        let currentPage = 1; 
+        let filteredRecruiters = []; 
+    
+      
+        async function fetchRecruiters() {
+            try {
+                const response = await fetch('https://localhost:7200/api/Recruiter');
+                if (!response.ok) throw new Error('Failed to fetch recruiters');
+    
+                recruiters = await response.json();
+                filteredRecruiters = recruiters; 
+                renderTable(filteredRecruiters);
+                renderPagination(filteredRecruiters); 
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    
+       
+        function renderTable(recruitersToDisplay) {
+    const tableBody = document.querySelector('#applicantTable tbody');
+    tableBody.innerHTML = ''; 
+
+   
+    const confirmedRecruiters = recruitersToDisplay.filter(recruiter => !recruiter.is_Confirm);
+
+    
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const recruitersToShow = confirmedRecruiters.slice(start, end);
+
+    recruitersToShow.forEach(recruiter => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${recruiter.id}</td>
+            <td><h5 class="mb-0"><a href="#">${recruiter.recruiter_Name}</a></h5></td>
+            <td>${recruiter.phone_Number}</td>
+            <td>${recruiter.iD_Company || ''}</td>
+            <td>${recruiter.email_Address || ''}</td>
+            <td>
+                <img class="img-fluid" 
+                     src="${recruiter.front_Image || 'default_front.jpg'}" 
+                     alt="Front Image" 
+                     onclick="showImage('${recruiter.front_Image || 'default_front.jpg'}')">
+            </td>
+            <td>
+                <img class="img-fluid" 
+                     src="${recruiter.back_Image || 'default_back.jpg'}" 
+                     alt="Back Image" 
+                     onclick="showImage('${recruiter.back_Image || 'default_back.jpg'}')">
+            </td>
+            <td class="action text-right">
+                <span 
+                    class="confirm-checkbox ${recruiter.is_Confirm ? 'confirmed' : 'not-confirmed'}" 
+                    onclick="toggleConfirmation(${recruiter.id}, this, ${recruiter.is_Confirm})">
+                    <i class="fas fa-check-circle" style="color: ${recruiter.is_Confirm ? 'green' : 'gray'};"></i>
+                </span>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+
+    
+    if (confirmedRecruiters.length === 0) {
+        const noDataRow = document.createElement('tr');
+        noDataRow.innerHTML = `<td colspan="8" class="text-center">No confirmed recruiters found.</td>`;
+        tableBody.appendChild(noDataRow);
+    }
+}
+
+        
+        function renderPagination(recruitersToDisplay) {
+            const pagination = document.querySelector('.pagination');
+            pagination.innerHTML = ''; 
+    
+            const totalPages = Math.ceil(recruitersToDisplay.length / itemsPerPage); 
+    
+           
+            const prevItem = document.createElement('li');
+            prevItem.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            prevItem.innerHTML = `<span class="page-link">Prev</span>`;
+            prevItem.onclick = () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderTable(recruitersToDisplay);
+                    renderPagination(recruitersToDisplay);
+                }
+            };
+            pagination.appendChild(prevItem);
+    
+            
+            const visiblePages = [];
+            const maxVisible = 1;
+    
+            visiblePages.push(1);
+            if (totalPages > 1) {
+                visiblePages.push(totalPages);
+            }
+    
+            for (let i = 2; i < totalPages; i++) {
+                if (Math.abs(currentPage - i) <= maxVisible) {
+                    visiblePages.push(i);
+                }
+            }
+    
+            visiblePages.sort((a, b) => a - b);
+    
+            for (let i = 0; i < visiblePages.length; i++) {
+                const page = visiblePages[i];
+                const pageItem = document.createElement('li');
+                pageItem.className = `page-item ${currentPage === page ? 'active' : ''}`;
+                pageItem.innerHTML = `<a class="page-link" href="#">${page}</a>`;
+                pageItem.onclick = () => {
+                    currentPage = page;
+                    renderTable(recruitersToDisplay);
+                    renderPagination(recruitersToDisplay);
+                };
+                pagination.appendChild(pageItem);
+    
+              
+                if (i < visiblePages.length - 1) {
+                    const nextPage = visiblePages[i + 1];
+                    if (Math.abs(page - nextPage) > 1) {
+                        const dotsItem = document.createElement('li');
+                        dotsItem.className = 'page-item disabled';
+                        dotsItem.innerHTML = `<span class="page-link">...</span>`;
+                        pagination.appendChild(dotsItem);
+                    }
+                }
+            }
+    
+           
+            const nextItem = document.createElement('li');
+            nextItem.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+            nextItem.innerHTML = `<span class="page-link">Next</span>`;
+            nextItem.onclick = () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderTable(recruitersToDisplay);
+                    renderPagination(recruitersToDisplay);
+                }
+            };
+            pagination.appendChild(nextItem);
+        }
+    
+      
+        function handleSearch() {
+            const searchInput = document.querySelector('.search-input').value.toLowerCase();
+    
+           
+            filteredRecruiters = recruiters.filter(recruiter => {
+                return recruiter.recruiter_Name.toLowerCase().includes(searchInput) ||
+                       recruiter.phone_Number.toLowerCase().includes(searchInput) ||
+                       recruiter.email_Address.toLowerCase().includes(searchInput) ||
+                       (recruiter.iD_Company && String(recruiter.iD_Company).toLowerCase().includes(searchInput)); 
+            });
+    
+            currentPage = 1; 
+            renderTable(filteredRecruiters);
+            renderPagination(filteredRecruiters);
+        }
+
+      
+        function confirmLogout() {
+            
+            const confirmed = window.confirm("Are you sure you want to log out?");
+            
+            if (confirmed) {
+                
+                fetch('https://localhost:7200/api/Admin/logout', {
+                    method: 'POST', 
+                    headers: {
+                        'Content-Type': 'application/json', 
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Logout failed');
+                    }
+                   
+                    alert("Logged out successfully!");
+                    window.location.href = "login.html"; 
+                })
+                .catch(error => {
+                    console.error('Logout error:', error);
+                    alert("Error logging out. Please try again.");
+                });
+            }
+        }
+        
+        
+        async function toggleConfirmation(recruiterId, element, isConfirmed) {
+            const action = isConfirmed ? 'remove' : 'confirm';
+            const message = isConfirmed ? 'remove the confirmation' : 'confirm this recruiter';
+            const confirmed = window.confirm(`Are you sure you want to ${action} this recruiter?`);
+
+            if (confirmed) {
+                try {
+                    const data = { is_Confirm: !isConfirmed, is_Registered: true };
+                    const response = await fetch(`https://localhost:7200/api/Recruiter/UpdateStatus/${recruiterId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+
+                    if (response.ok) {
+                        alert(`Recruiter has been ${action}d successfully!`);
+                        fetchRecruiters();
+                    } else {
+                        alert("Error updating recruiter status.");
+                    }
+                } catch (error) {
+                    console.error('Error updating recruiter status:', error);
+                }
+            }
+        }
+
+       
+        document.addEventListener('DOMContentLoaded', fetchRecruiters);
+    
+        
+        document.querySelector('.search-input').addEventListener('input', handleSearch);
+    </script>
+    
+</body>
+</html>

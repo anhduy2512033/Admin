@@ -1,0 +1,297 @@
+/* Reset một số thuộc tính mặc định */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Đặt nền cho trang */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7fb;
+    color: #333;
+}
+
+/* Đảm bảo rằng các hình ảnh này sẽ có hình tròn và kích thước 50px */
+.avatar-img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+/* Navbar */
+.navbar {
+    background-color: #0aed3b;
+    padding: 15px 30px;
+    color: white;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Navbar Brand */
+.navbar-brand {
+    font-size: 26px;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+}
+
+.navbar-brand:hover {
+    color: #f1f1f1;
+}
+
+/* Search Container */
+.search-container {
+    display: flex;
+    align-items: center;
+    flex-grow: 1; /* Đẩy phần tìm kiếm rộng hơn */
+    justify-content: flex-end; /* Canh giữa phần tìm kiếm */
+}
+
+.search-input {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 25px;
+    border: 1px solid #ddd;
+    width: 300px;
+    transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.search-btn {
+    padding: 8px 15px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    margin-left: 5px;
+    margin-right: 20px;
+}
+
+.search-btn i {
+    color: white;
+}
+
+.search-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Dropdown Menu */
+.dropdown {
+    position: relative;
+    display: flex; /* Để căn User Icon và menu trên cùng 1 hàng */
+    align-items: center;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%; /* Đặt menu xuất hiện ngay dưới biểu tượng user */
+    right: 0; /* Menu căn chỉnh sang phải */
+    background-color: #ffffff;
+    min-width: 160px;
+    max-height: 300px; /* Giới hạn chiều cao của menu */
+    overflow-y: auto; /* Cho phép cuộn nếu quá nhiều mục */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    border-radius: 5px;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown-content a {
+    color: rgb(0, 0, 0);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 16px;
+}
+
+.dropdown-content a:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+/* User Icon */
+.user-icon {
+    font-size: 24px;
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.user-icon:hover {
+    color: #0056b3;
+}
+
+/* Nội dung trang */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 15px;
+}
+
+h2 {
+    color: #007bff;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Bảng hiển thị ứng viên */
+.user-dashboard-info-box {
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-dashboard-info-box .table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.user-dashboard-info-box .table th, .user-dashboard-info-box .table td {
+    padding: 12px;
+    text-align: left;
+}
+
+.user-dashboard-info-box .table th {
+    background-color: #f1f1f1;
+    color: #333;
+    font-size: 16px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.user-dashboard-info-box .table td {
+    border-bottom: 1px solid #ddd;
+}
+
+.user-dashboard-info-box .table tr:last-child td {
+    border-bottom: none;
+}
+
+.candidate-list {
+    display: flex;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #f1f1f1;
+    transition: all 0.3s ease;
+}
+
+.candidate-list:hover {
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.candidate-list .thumb {
+    margin-right: 20px;
+}
+
+.candidate-list img {
+    width: 50px; /* Điều chỉnh kích thước avatar */
+    height: 50px; /* Điều chỉnh kích thước avatar */
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.candidate-list-details ul {
+    color: #666;
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.candidate-list-details ul li {
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.candidate-list-details .candidate-list-title {
+    font-weight: bold;
+    color: #333;
+}
+
+/* Canh chỉnh phần "Action" sang bên phải */
+.user-dashboard-info-box .action {
+    text-align: right;
+}
+
+.user-dashboard-info-box .action a {
+    color: #dc3545;
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+.user-dashboard-info-box .action a:hover {
+    color: #c82333;
+}
+
+/* Phân trang */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style-type: none;
+    padding: 0;
+    margin-top: 30px;
+}
+
+.pagination li {
+    margin: 0 5px;
+}
+
+.pagination .page-link {
+    color: #007bff;
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.pagination .page-link:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
+    background-color: #f8f9fa;
+    pointer-events: none;
+}
+
+/* Các hiệu ứng hover và thẻ thao tác */
+.user-dashboard-info-box .candidates-list td .candidate-list-option a {
+    color: #007bff;
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+.user-dashboard-info-box .candidates-list td .candidate-list-option a:hover {
+    color: #0056b3;
+}

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style/login.css">
+    <title>Login</title>
+</head>
+<body>
+    <div class="container">
+        <div class="screen">
+            <div class="screen__content">
+                <form class="login" onsubmit="handleLogin(event)">
+                    <div class="login__field">
+                        <i class="login__icon fas fa-user"></i>
+                        <input type="text" class="login__input" placeholder="User name" id="username">
+                    </div>
+                    <div class="login__field">
+                        <i class="login__icon fas fa-lock"></i>
+                        <input type="password" class="login__input" placeholder="Password" id="password">
+                    </div>
+                    <button type="submit" class="button login__submit">
+                        <span class="button__text">Log In Now</span>
+                        <i class="button__icon fas fa-chevron-right"></i>
+                    </button>				
+                </form>
+            </div>
+            <div class="screen__background">
+                <span class="screen__background__shape screen__background__shape4"></span>
+                <span class="screen__background__shape screen__background__shape3"></span>		
+                <span class="screen__background__shape screen__background__shape2"></span>
+                <span class="screen__background__shape screen__background__shape1"></span>
+            </div>		
+        </div>
+    </div>
+
+    <script>
+        function handleLogin(event) {
+            event.preventDefault();
+    
+            
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+    
+           
+            const loginData = {
+                Username: username,
+                Password: password
+            };
+    
+            fetch("https://localhost:7200/api/Admin/login", {
+                method: "POST", 
+                headers: {
+                    "Content-Type": "application/json" 
+                },
+                body: JSON.stringify(loginData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    
+                    window.location.href = "applicant.html";
+                } else {
+                    
+                    return response.json().then(data => {
+                        alert(data.message || "Invalid username or password. Please try again.");
+                    });
+                }
+            })
+            .catch(error => {
+                
+                console.error("Error:", error);
+                alert("An error occurred. Please try again.");
+            });
+        }
+    </script>
+    
+</body>
+</html>
